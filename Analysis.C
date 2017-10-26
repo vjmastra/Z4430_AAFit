@@ -455,6 +455,7 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
   totEvents *= 10; totEvents *= 5;
   //totEvents *= 10; totEvents *= 3;
   //totEvents /= 2; totEvents /= 100;
+  totEvents = nEvt; 
   RooRealVar nSig("nSig", "n_{SIG}", 0, 0, 1E6);
   //nSig.setVal( 10*nSig.getVal() ); // Does not work on the fly
   Float_t purity = 0.8;
@@ -912,7 +913,7 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
     dataGenPDF->write(TString::Format("%s/%s/%s%s.txt",datasetsPath.Data(),flavour.Data(),model->GetName(),selection.Data()));
     //dataGenPDFB0->write(TString::Format("%s/%s/%s%s__B0Flag.txt",datasetsPath.Data(),flavour.Data(),model->GetName(),selection.Data()));
 
-    return;
+    //return;
 
     dataToFit = dataGenPDF;
   }
