@@ -199,24 +199,28 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
   Kstar_spin.push_back( make_pair("892_1", make_pair(M892,G892) ) ) ;
   helJ_map["892_1_0"] = make_pair(K892_1_0_a,K892_1_0_b); helJ_map["892_1_p1"] = make_pair(K892_1_p1_a,K892_1_p1_b); helJ_map["892_1_m1"] = make_pair(K892_1_m1_a,K892_1_m1_b); // from Belle
   //helJ_map["892_1_0"] = make_pair(0.775,0.); helJ_map["892_1_p1"] = make_pair(0.159,1.563); helJ_map["892_1_m1"] = make_pair(0.612,2.712); // from EvtGen
-
+/*
   cout <<"Adding K*(800)..." <<endl;
   Kstar_spin.push_back( make_pair("800_0", make_pair(M800,G800) ) ) ;
   helJ_map["800_0_0"] = make_pair(K800_0_0_a,K800_0_0_b);
-
+*/
+/*
   cout <<"Adding K*(1410)..." <<endl;
   Kstar_spin.push_back( make_pair("1410_1", make_pair(M1410,G1410) ) ) ;
   helJ_map["1410_1_0"] = make_pair(K1410_1_0_a,K1410_1_0_b); helJ_map["1410_1_p1"] = make_pair(K1410_1_p1_a,K1410_1_p1_b); helJ_map["1410_1_m1"] = make_pair(K1410_1_m1_a,K1410_1_m1_b);
-
+*/
+/*
   cout <<"Adding K*(1430)_0..." <<endl;
   Kstar_spin.push_back( make_pair("1430_0", make_pair(M1430_0,G1430_0) ) ) ;
   helJ_map["1430_0_0"] = make_pair(K1430_0_0_a,K1430_0_0_b);
   //helJ_map["1430_0_0"] = make_pair(1.,0.);
-
+*/
+/*
   cout <<"Adding K*(1430)_2..." <<endl;
   Kstar_spin.push_back( make_pair("1430_2", make_pair(M1430_2,G1430_2) ) ) ;
   helJ_map["1430_2_0"] = make_pair(K1430_2_0_a,K1430_2_0_b); helJ_map["1430_2_p1"] = make_pair(K1430_2_p1_a,K1430_2_p1_b); helJ_map["1430_2_m1"] = make_pair(K1430_2_m1_a,K1430_2_m1_b);
-  /*
+*/  
+/*
     cout <<"Adding K*(1780)_3..." <<endl;
     Kstar_spin.push_back( make_pair("1780_3", make_pair(M1780_3,G1780_3) ) ) ;
     helJ_map["1780_3_0"] = make_pair(K1780_3_0_a,K1780_3_0_b); helJ_map["1780_3_p1"] = make_pair(K1780_3_p1_a,K1780_3_p1_b); helJ_map["1780_3_m1"] = make_pair(K1780_3_m1_a,K1780_3_m1_b);
@@ -347,7 +351,7 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
   RooRealVar B0beauty("B0beauty","B^{0} beauty",0,-1.5,1.5);
   RooArgSet kinematicVars_withBeauty(kinematicVars, B0beauty, TString::Format("%s_with%s",kinematicVars.GetName(),B0beauty.GetName())) ;
 
-  inputFile = 0;
+  inputFile = 0; //
   if (!inputFile) {
     cout <<"Warning: unable to open file \"" <<fullInputFileName <<"\"" <<endl;
   } else {
@@ -445,17 +449,18 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
   RooAbsPdf* BdToPsiPiK_PHSP = new RooGenericPdf("BdToPsiPiK_PHSP","3-body PHSP","sqrt( pow(mass2KPiFor,2) + pow(m2Pion,2) + pow(m2Kaon,2) - 2*mass2KPiFor*m2Pion - 2*mass2KPiFor*m2Kaon - 2*m2Pion*m2Kaon ) * sqrt( pow(m2Bd,2) + pow(mass2KPiFor,2) + pow(m2Psi,2) - 2*m2Bd*mass2KPiFor - 2*m2Bd*m2Psi - 2*mass2KPiFor*m2Psi ) / sqrt(mass2KPiFor)", RooArgSet(mass2KPiFor,m2Pion,m2Kaon,m2Bd,m2Psi)); // variables name used in the formula must be = RooVariables name in the RooArgSet
   //cout <<"\nBdToPsiPiK_PHSP.getVal() =\n" <<BdToPsiPiK_PHSP->getVal() <<endl; return;
 
-  RooAbsPdf* bkgPDF = BdToPsiPiK_PHSP; bkgPDF = 0;
+  RooAbsPdf* bkgPDF = BdToPsiPiK_PHSP; 
+  if (!bkgFlag) bkgPDF = 0;
 
-  Double_t totEvents = 2000; // Generation time does not scale with number of events up to at least 10k events, from 100k yes
+  Double_t totEvents = 10000; // Generation time does not scale with number of events up to at least 10k events, from 100k yes
+  totEvents = nEvt; //
   //totEvents *= 2;
   //totEvents *= 2.5;
   //totEvents *= 5;
-  totEvents *= 10;
-  totEvents *= 10; totEvents *= 5;
+  //totEvents *= 10;
+  //totEvents *= 10; totEvents *= 5;
   //totEvents *= 10; totEvents *= 3;
   //totEvents /= 2; totEvents /= 100;
-  totEvents = nEvt; 
   RooRealVar nSig("nSig", "n_{SIG}", 0, 0, 1E6);
   //nSig.setVal( 10*nSig.getVal() ); // Does not work on the fly
   Float_t purity = 0.8;
@@ -913,7 +918,7 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
     dataGenPDF->write(TString::Format("%s/%s/%s%s.txt",datasetsPath.Data(),flavour.Data(),model->GetName(),selection.Data()));
     //dataGenPDFB0->write(TString::Format("%s/%s/%s%s__B0Flag.txt",datasetsPath.Data(),flavour.Data(),model->GetName(),selection.Data()));
 
-    //return;
+   //return;
 
     dataToFit = dataGenPDF;
   }
@@ -987,6 +992,8 @@ void Analysis(Int_t nEvt = 100000, Bool_t generating = kFALSE, Bool_t bkgFlag = 
     gStyle->SetOptStat( 10 ) ;
     scatter->Draw("COLZ");
     scatter_C->SaveAs(TString::Format("%s/%s_%s%s",dir.Data(),scatter_C->GetName(),plotName.Data(),extension.Data()));
+
+cout << "HELP" << endl;
 
     cout <<"\nPlotting Dalitz..." <<endl;
     TCanvas* dalitz_C = new TCanvas("Dalitz_C","Dalitz",800,600) ; dalitz_C->SetRightMargin(rightMargin); dalitz_C->cd();
