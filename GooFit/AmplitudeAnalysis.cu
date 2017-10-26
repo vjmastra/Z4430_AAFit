@@ -2870,7 +2870,7 @@ if (!(relEffTH2Mass)) {
   canvas->SetLogy(1);
   canvas->SaveAs(TString::Format("%s/pdfMassesCounter_%s_log.%s",plotsDir.Data(),plotsName.Data(),extension.Data()));
   canvas->Clear();
-  canvas->SetLogy(0);
+  canvas->SetLogx(0);
   canvas->SetLogy(0);
 
   binContentPdfAngles->Draw();
