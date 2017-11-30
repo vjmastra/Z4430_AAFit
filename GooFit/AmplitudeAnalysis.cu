@@ -582,7 +582,7 @@ int main(int argc, char** argv) {
   fptype phi_min = -3.25, phi_max = -phi_min;
 
   // The fit is very sensitive to the ranges below, be aware when changing them
-  fptype fitMargin = 0.1; // 0.0 takes 6' and 250 more calls but gives better agreement with gen values for K*(892) and K*(800)
+  fptype fitMargin = 0.1;//test // 0.0 takes 6' and 250 more calls but gives better agreement with gen values for K*(892) and K*(800)
   pair<fptype,fptype> fitRange[] = {make_pair(massKPi_min-fitMargin,massKPi_max+fitMargin), make_pair(massPsiPi_min-fitMargin,massPsiPi_max+fitMargin), make_pair(cosMuMu_min,cosMuMu_max), make_pair(phi_min,phi_max)};
 
   Variable* massKPi = new Variable(massKPi_name.Data(),1.,fitRange[0].first,fitRange[0].second); massKPi->numbins = bin[0];
@@ -774,7 +774,7 @@ int main(int argc, char** argv) {
   TRandom ranGen(ms);
 
   std::vector<Variable*> Masses, Gammas, Spins, as, bs;
-
+ 
   if (k892Star) {
     cout <<"\nAdding K*(892) ..." <<endl;
 
@@ -876,6 +876,136 @@ int main(int argc, char** argv) {
     as.push_back(new Variable("a_K_1780_3_m1",K1780_3_m1_a,aMin,aMax));
     bs.push_back(new Variable("b_K_1780_3_m1",K1780_3_m1_b,bMin,bMax));
   }
+
+  //Test of fit stability wrt initial conditions
+  
+  std::vector<fptype> asbelle, bsbelle;
+  std::vector<TString> tsbelle;
+  std::vector<fptype> as_init, bs_init;
+  fptype amp_cff = 0.5;
+  fptype phs_cff = 1.57079632679;
+
+  int kk = 0;
+
+  //K892_0's parameters are fixed
+  
+  asbelle.push_back(K892_1_0_a);
+  bsbelle.push_back(K892_1_0_b);
+  tsbelle.push_back("K892_1_0");
+  as_init.push_back(as[kk]->value);
+  bs_init.push_back(bs[kk]->value);
+  kk++;
+
+  if (k892Star) {
+  asbelle.push_back(K892_1_p1_a);
+  bsbelle.push_back(K892_1_p1_b);
+  tsbelle.push_back("K892_1_p1");
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1,1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K892_1_m1_a);
+  bsbelle.push_back(K892_1_m1_b);
+  tsbelle.push_back("K892_1_m1");
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+  if (k800Star) {
+  asbelle.push_back(K800_0_0_a);
+  bsbelle.push_back(K800_0_0_b);
+  tsbelle.push_back("K800_0_0");  
+  as_init.push_back((1 + ranGen.Uniform(-1,1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1,1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+  if (k1410Star) {
+  asbelle.push_back(K1410_1_0_a);
+  bsbelle.push_back(K1410_1_0_b);
+  tsbelle.push_back("K1410_1_0");  
+  as_init.push_back((1 + ranGen.Uniform(-1,1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1,1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1410_1_p1_a);
+  bsbelle.push_back(K1410_1_p1_b);
+  tsbelle.push_back("K1410_1_p1");  
+  as_init.push_back((1 +ranGen.Uniform(-1,1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1410_1_m1_a);
+  bsbelle.push_back(K1410_1_m1_b);
+  tsbelle.push_back("K1410_1_m1");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+  if (k1430Star0) {
+  asbelle.push_back(K1430_0_0_a);
+  bsbelle.push_back(K1430_0_0_b);
+  tsbelle.push_back("K1430_0_0");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+  if (k1430Star2) {
+  asbelle.push_back(K1430_2_0_a);
+  bsbelle.push_back(K1430_2_0_b);
+  tsbelle.push_back("K1430_2_0");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1430_2_p1_a);
+  bsbelle.push_back(K1430_2_p1_b);
+  tsbelle.push_back("K1430_2_p1");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1430_2_m1_a);
+  bsbelle.push_back(K1430_2_m1_b);
+  tsbelle.push_back("K1430_2_m1");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+  if (k1780Star) {
+  asbelle.push_back(K1780_3_0_a);
+  bsbelle.push_back(K1780_3_0_b);
+  tsbelle.push_back("K1780_3_0");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value +ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1780_3_p1_a);
+  bsbelle.push_back(K1780_3_p1_b);
+  tsbelle.push_back("K1780_3_p1");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  asbelle.push_back(K1780_3_m1_a);
+  bsbelle.push_back(K1780_3_m1_b);
+  tsbelle.push_back("K1780_3_m1");  
+  as_init.push_back((1 + ranGen.Uniform(-1, 1)*amp_cff)*(as[kk]->value));
+  as[kk]->value = as_init[kk];
+  bs_init.push_back(bs[kk]->value + ranGen.Uniform(-1, 1)*phs_cff);
+  bs[kk]->value = bs_init[kk]; kk++;
+  }
+
+//end test
 
   Int_t nHelAmps = as.size();
 
@@ -3296,6 +3426,56 @@ if (!(relEffTH2Mass)) {
   cout <<"PDF projection time:    " <<(projClocks / CLOCKS_PER_SEC) <<" s" <<endl ;
   cout <<"~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~" <<endl;
 
+//Txt file 
+
+  ofstream myfile;
+  myfile.open("params.txt", std::ofstream::app);
+
+  myfile << setw(12) << "NAME" << setw(12) << "GEN_VAL" << setw(12) << "INI_VAL" << setw(12) << "FIT_VAL" << setw(28) << "DELTA" << setw(12) << "PULL" << endl;
+  
+  int jj = 0;
+  vector<fptype> amp_delta, amp_sig;
+  vector<fptype> phs_delta, phs_sig;
+  fptype fakead, fakepd; //fake delta
+  fptype fakeas, fakeps; //fake significance
+
+  for(jj = 0; jj < as.size(); jj++){
+  fakead = (as[jj]->value - asbelle[jj])/asbelle[jj];
+  fakead = fakead*100;
+  if(fakead < 0) fakead = -fakead;
+  amp_delta.push_back(fakead);
+  
+  if(as[jj]->error == 0) {
+  amp_sig.push_back(0);
+  } else {
+  	fakeas = (as[jj]->value - asbelle[jj])/as[jj]->error;
+  	if(fakeas < 0) fakeas = -fakeas;
+  	amp_sig.push_back(fakeas);
+  }
+
+  fakepd = (bs[jj]->value - bsbelle[jj]);
+  if(fakepd < 0) fakepd = -fakepd;
+  if(fakepd > TMath::Pi()) fakepd = 2*TMath::Pi() - fakepd;
+  phs_delta.push_back(fakepd);
+
+  if (bs[jj]->error == 0) {
+  phs_sig.push_back(0);
+  } else {
+	  fakeps = fakepd/bs[jj]->error;
+	  if(fakeps < 0) fakeps = -fakeps;
+	  phs_sig.push_back(fakeps);
+  }
+
+  }
+
+  for(jj = 0; jj < as.size(); jj++){
+	myfile << setw(12) << tsbelle[jj]+"_a" << setw(12) << asbelle[jj] << setw(12) << as_init[jj] << setw(12) << as[jj]->value << setw(4) << " pm " << setw(12) << as[jj]->error << setw(12) << amp_delta[jj] << " %   " << setw(12) << amp_sig[jj] << endl;
+  	myfile << setw(12) << tsbelle[jj]+"_b" << setw(12) << bsbelle[jj] << setw(12) << bs_init[jj] << setw(12) << bs[jj]->value << " pm " << setw(12) << bs[jj]->error << setw(12) << phs_delta[jj] << " rad " << setw(12) << phs_sig[jj] << endl; 
+  }
+
+  myfile << "-------------------------------\n" << endl;
+
+  myfile.close();
 
   return 0;
 
